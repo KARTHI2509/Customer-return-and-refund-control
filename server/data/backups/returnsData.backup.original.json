@@ -1,0 +1,535 @@
+[
+  {
+    "id": "RET-2026-001",
+    "returnOrder": "RO-772109",
+    "sapDocument": "INV-460008",
+    "companyCode": "1300",
+    "plant": "1108",
+    "plantName": "Plant 1108 (Solar Module Fabrication)",
+    "storageLocation": "SL11",
+    "storageLocationName": "SL11 - Returns & Quality Quarantine",
+    "costCenter": "CC-2208",
+    "costCenterName": "CC-2208 - Customer Service & Warranty",
+    "material": "Composite Panel CP-12",
+    "materialId": "MAT-CP-1200",
+    "businessPartner": "M... Stores",
+    "businessPartnerRaw": "M... [Unresolved Partner Reference - Truncated in Source]",
+    "businessPartnerName": "M... Stores (Regional Renewable Distributor)",
+    "currency": "GBP",
+    "amount": 23500,
+    "requestedDate": "2026-08-13",
+    "processingStatus": "Completed",
+    "exceptionCategory": "Data Inconsistency & Approval Bottleneck",
+    "primaryExceptionReason": "Return Order missing mandatory Reason Code (BKP rule); Physical inspection at SL11 recorded 10 units vs 15 on invoice INV-460008; Credit Memo blocked pending Finance review.",
+    "assignedOwner": "P. Sundaram (Returns Manager)",
+    "riskLevel": "CRITICAL",
+    "riskScore": 88,
+    "riskReasons": [
+      "Ageing exceeds 7-day critical SLA threshold (>70 days since 2026-08-13)",
+      "High financial exposure: £23,500 exceeds £20k tier threshold",
+      "Missing mandatory SAP SD BKP attribute: ReturnReasonCode",
+      "Discrepancy: Goods Receipt (VL01N) inspection found 10 units; Return Order has 15 units",
+      "Billing block active: VF01 Credit Memo cannot be posted automatically"
+    ],
+    "isPrimaryReference": true,
+    "deliveryDocument": "80004128",
+    "goodsReceiptStatus": "Post Goods Receipt Completed (10 Units)",
+    "billingBlock": "None",
+    "creditMemoDoc": "CR-907800",
+    "timeline": [
+      {
+        "step": "Customer Return Request Initiated",
+        "timestamp": "2026-08-13 09:15",
+        "actor": "Customer Portal / EDI",
+        "status": "COMPLETED",
+        "docRef": "INV-460008",
+        "sapTx": "VA01",
+        "detail": "Customer reported micro-crack defect on Composite Panel CP-12 batch B-882."
+      },
+      {
+        "step": "Return Order Created in SAP SD",
+        "timestamp": "2026-08-13 11:30",
+        "actor": "SAP System / BKP Workflow",
+        "status": "WARNING",
+        "docRef": "RO-772109",
+        "sapTx": "VA01 (Doc Type CBRE)",
+        "detail": "Return Order drafted. Missing mandatory Return Reason code in Sales Order header."
+      },
+      {
+        "step": "Inbound Return Delivery & Inspection",
+        "timestamp": "2026-08-16 14:00",
+        "actor": "Warehouse Operator (SL11)",
+        "status": "WARNING",
+        "docRef": "DEL-80004128",
+        "sapTx": "VL01N / VL02N",
+        "detail": "Physical goods arrived at Plant 1108 SL11. Inspection verified 10 units (5 units short-shipped)."
+      },
+      {
+        "step": "Credit Memo Block Triggered",
+        "timestamp": "2026-08-17 08:00",
+        "actor": "SAP SD Billing Engine",
+        "status": "BLOCKED",
+        "docRef": "VF01 Block: 08",
+        "sapTx": "VF01",
+        "detail": "Credit Memo generation suspended due to quantity variance and unassigned root cause."
+      },
+      {
+        "step": "Credit Memo Approved & Posted",
+        "timestamp": "2026-10-28 02:35",
+        "actor": "P. Sundaram (Returns Manager)",
+        "status": "COMPLETED",
+        "docRef": "CR-907800",
+        "sapTx": "VF01 (Credit Posted)",
+        "detail": "Approved quantity adjustment and released billing block"
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Adjust Return Order quantity to 10 units, update Return Reason to '015 - Solar Panel Cell Fracture', and release Finance billing block.",
+      "confidence": "94%",
+      "evidence": [
+        "Plant 1108 physical inspection sheet #QA-412 confirms 10 units intact in SL11",
+        "Invoice INV-460008 original billed unit price: £1,566.67",
+        "Revised exposure: 10 x £1,566.67 = £15,666.70 (saving £7,833.30 from erroneous credit)"
+      ],
+      "status": "ACCEPTED",
+      "userFeedback": "Accepted standard recommendation",
+      "revisedAction": "Adjust Return Order quantity to 10 units, update Return Reason to '015 - Solar Panel Cell Fracture', and release Finance billing block.",
+      "decidedBy": "P. Sundaram",
+      "decidedAt": "2026-10-28T02:35:54.007Z"
+    },
+    "comments": [
+      {
+        "id": "c1",
+        "author": "A. Sharma (Returns Analyst)",
+        "timestamp": "2026-08-18 10:20",
+        "text": "Confirmed with warehouse supervisor at Plant 1108 that only 10 panels were physically offloaded into SL11. Carrier manifest shows remaining 5 panels retained by distributor for re-testing."
+      }
+    ]
+  },
+  {
+    "id": "RET-2026-002",
+    "returnOrder": "RO-772115",
+    "sapDocument": "INV-460012",
+    "companyCode": "1300",
+    "plant": "1108",
+    "plantName": "Plant 1108 (Solar Module Fabrication)",
+    "storageLocation": "SL11",
+    "storageLocationName": "SL11 - Returns & Quality Quarantine",
+    "costCenter": "CC-2208",
+    "costCenterName": "CC-2208 - Customer Service & Warranty",
+    "material": "Inverter Module INV-500",
+    "materialId": "MAT-INV-5000",
+    "businessPartner": "BP-40012",
+    "businessPartnerRaw": "BP-40012",
+    "businessPartnerName": "Apex Solar Farms Ltd",
+    "currency": "GBP",
+    "amount": 42000,
+    "requestedDate": "2026-08-20",
+    "processingStatus": "Pending Approval",
+    "exceptionCategory": "Financial Threshold Escalation",
+    "primaryExceptionReason": "High value return (£42,000) exceeds Returns Manager approval limit (£25k); Requires Head of Finance sign-off before credit release.",
+    "assignedOwner": "R. Nair (Finance Approver)",
+    "riskLevel": "CRITICAL",
+    "riskScore": 82,
+    "riskReasons": [
+      "Amount £42,000 exceeds single-manager governance cap of £25,000",
+      "Pending in Finance inbox > 12 days",
+      "High commercial impact with Tier-1 IPP partner"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004135",
+    "goodsReceiptStatus": "Goods Receipt Completed",
+    "billingBlock": "09 - Finance Tier-2 Sign-off Required",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Return Request Logged",
+        "timestamp": "2026-08-20 11:00",
+        "actor": "Apex Solar Account Mgr",
+        "status": "COMPLETED",
+        "docRef": "INV-460012",
+        "sapTx": "VA01",
+        "detail": "Firmware incompatibility reported on 3 commercial inverters."
+      },
+      {
+        "step": "Technical Inspection Approved",
+        "timestamp": "2026-08-24 16:30",
+        "actor": "Plant 1108 QA Lead",
+        "status": "COMPLETED",
+        "docRef": "QA-8812",
+        "sapTx": "VL02N",
+        "detail": "Hardware is flawless; unit requires re-flashing at distributor."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Finance Approver to authorize replacement order with zero credit memo or approve re-stock credit minus 5% handling fee.",
+      "confidence": "91%",
+      "evidence": [
+        "Inspection report clears hardware integrity",
+        "SLA timer at 18 days vs 14 day target"
+      ],
+      "status": "RECOMMENDED"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-003",
+    "returnOrder": "RO-772120",
+    "sapDocument": "INV-459990",
+    "companyCode": "1300",
+    "plant": "1102",
+    "plantName": "Plant 1102 (Wind Turbine Components)",
+    "storageLocation": "SL02",
+    "storageLocationName": "SL02 - Finished Goods Returns",
+    "costCenter": "CC-1102",
+    "costCenterName": "CC-1102 - Wind Operations",
+    "material": "Turbine Pitch Sensor PS-44",
+    "materialId": "MAT-PS-440",
+    "businessPartner": "BP-20088",
+    "businessPartnerRaw": "BP-20088",
+    "businessPartnerName": "Orion Wind Consortium",
+    "currency": "GBP",
+    "amount": 8400,
+    "requestedDate": "2026-09-02",
+    "processingStatus": "Unassigned",
+    "exceptionCategory": "Missing Ownership & Ageing",
+    "primaryExceptionReason": "No accountable owner assigned after initial customer notification; SLA ageing is 14 days without resolution plan.",
+    "assignedOwner": "Unassigned",
+    "riskLevel": "HIGH",
+    "riskScore": 68,
+    "riskReasons": [
+      "No accountable owner assigned across 14 operational days",
+      "Customer SLA breached (target: 5 business days for triage)",
+      "Risk of premium freight costs if replacement expedited"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": null,
+    "goodsReceiptStatus": "Awaiting Inbound Shipment",
+    "billingBlock": "01 - Initial Hold",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Customer Return Request",
+        "timestamp": "2026-09-02 08:45",
+        "actor": "Customer Portal",
+        "status": "COMPLETED",
+        "docRef": "INV-459990",
+        "sapTx": "VA01",
+        "detail": "Pitch sensor failure at offshore installation."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Returns Manager to immediately assign case to Plant 1102 returns specialist and issue Return Merchandise Authorisation (RMA) tracking slip.",
+      "confidence": "96%",
+      "evidence": [
+        "Unassigned status for 14 days",
+        "Orion Wind has 2 high priority open grid contracts"
+      ],
+      "status": "ACTION_REQUIRED"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-004",
+    "returnOrder": "RO-772124",
+    "sapDocument": "INV-460105",
+    "companyCode": "1300",
+    "plant": "1108",
+    "plantName": "Plant 1108 (Solar Module Fabrication)",
+    "storageLocation": "SL11",
+    "storageLocationName": "SL11 - Returns & Quality Quarantine",
+    "costCenter": "CC-2208",
+    "costCenterName": "CC-2208 - Customer Service & Warranty",
+    "material": "Monocrystalline Wafer MW-80",
+    "materialId": "MAT-MW-800",
+    "businessPartner": "BP-30114",
+    "businessPartnerRaw": "BP-30114",
+    "businessPartnerName": "Helios Energy Systems",
+    "currency": "GBP",
+    "amount": 16200,
+    "requestedDate": "2026-09-10",
+    "processingStatus": "Partially Processed",
+    "exceptionCategory": "Missing Mandatory Data",
+    "primaryExceptionReason": "Return delivery created in VL01N without batch valuation type; SAP inventory posting blocked with error M7-021.",
+    "assignedOwner": "A. Sharma (Returns Analyst)",
+    "riskLevel": "MEDIUM",
+    "riskScore": 48,
+    "riskReasons": [
+      "Missing Batch Valuation Class in Delivery Item",
+      "Inventory cannot be posted to unrestricted or scrap stock",
+      "SLA ageing: 6 days"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004142",
+    "goodsReceiptStatus": "PGR Error: Valuation Missing",
+    "billingBlock": "02 - Incomplete Inbound Delivery",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Return Order Approved",
+        "timestamp": "2026-09-10 10:15",
+        "actor": "A. Sharma",
+        "status": "COMPLETED",
+        "docRef": "RO-772124",
+        "sapTx": "VA01",
+        "detail": "Standard return authorised."
+      },
+      {
+        "step": "Inbound Delivery Failed in SAP",
+        "timestamp": "2026-09-12 15:40",
+        "actor": "SAP MM/WM Interface",
+        "status": "ERROR",
+        "docRef": "DEL-80004142",
+        "sapTx": "VL02N",
+        "detail": "Error M7-021: Batch valuation class required for split-valuation material MW-80."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Update Delivery document line 10 with Valuation Type 'DEFECTIVE' via VL02N and re-post goods receipt.",
+      "confidence": "98%",
+      "evidence": [
+        "Material master MAT-MW-800 has active split valuation in Plant 1108",
+        "QA defect classification: Grade C Wafer"
+      ],
+      "status": "ACCEPTED",
+      "userFeedback": "Accepted standard recommendation",
+      "decidedBy": "P. Sundaram",
+      "decidedAt": "2026-10-28T02:35:41.339Z"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-005",
+    "returnOrder": "RO-772130",
+    "sapDocument": "INV-460144",
+    "companyCode": "1300",
+    "plant": "1102",
+    "plantName": "Plant 1102 (Wind Turbine Components)",
+    "storageLocation": "SL02",
+    "storageLocationName": "SL02 - Finished Goods Returns",
+    "costCenter": "CC-1102",
+    "costCenterName": "CC-1102 - Wind Operations",
+    "material": "Generator Coil GC-900",
+    "materialId": "MAT-GC-900",
+    "businessPartner": "BP-10022",
+    "businessPartnerRaw": "BP-10022",
+    "businessPartnerName": "Zephyr Green Power",
+    "currency": "GBP",
+    "amount": 51000,
+    "requestedDate": "2026-09-14",
+    "processingStatus": "Pending Approval",
+    "exceptionCategory": "Financial Threshold Escalation",
+    "primaryExceptionReason": "High exposure return (£51,000) for offshore generator coil; Warranty claim submitted without original commissioning certificate.",
+    "assignedOwner": "P. Sundaram (Returns Manager)",
+    "riskLevel": "CRITICAL",
+    "riskScore": 85,
+    "riskReasons": [
+      "Very high financial exposure (£51,000)",
+      "Warranty claim missing mandatory commissioning documentation",
+      "Executive review threshold triggered"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004150",
+    "goodsReceiptStatus": "Quarantine Inspection Complete",
+    "billingBlock": "05 - Warranty Dispute Hold",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Warranty Claim Logged",
+        "timestamp": "2026-09-14 09:30",
+        "actor": "Zephyr Warranty Mgr",
+        "status": "COMPLETED",
+        "docRef": "INV-460144",
+        "sapTx": "VA01",
+        "detail": "Claiming stator insulation breakdown under year 1 warranty."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Request commissioning report from Zephyr before approving credit; if unavailable, negotiate 50/50 goodwill repair credit.",
+      "confidence": "89%",
+      "evidence": [
+        "Contract terms section 8.4 mandates verified commissioning log",
+        "Field telemetry indicates high operating thermal cycles"
+      ],
+      "status": "ACTION_REQUIRED"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-006",
+    "returnOrder": "RO-772138",
+    "sapDocument": "INV-460180",
+    "companyCode": "1300",
+    "plant": "1108",
+    "plantName": "Plant 1108 (Solar Module Fabrication)",
+    "storageLocation": "SL11",
+    "storageLocationName": "SL11 - Returns & Quality Quarantine",
+    "costCenter": "CC-2208",
+    "costCenterName": "CC-2208 - Customer Service & Warranty",
+    "material": "Aluminium Mounting Rail MR-04",
+    "materialId": "MAT-MR-040",
+    "businessPartner": "BP-50090",
+    "businessPartnerRaw": "BP-50090",
+    "businessPartnerName": "TerraWatt Installations",
+    "currency": "GBP",
+    "amount": 3200,
+    "requestedDate": "2026-09-18",
+    "processingStatus": "Completed",
+    "exceptionCategory": "Routine Resolved",
+    "primaryExceptionReason": "Minor packing damage; replaced and credit processed within standard SLA.",
+    "assignedOwner": "A. Sharma (Returns Analyst)",
+    "riskLevel": "LOW",
+    "riskScore": 12,
+    "riskReasons": [
+      "Resolved within 48 hours",
+      "Low financial amount (£3,200)",
+      "All SAP SD documents completed"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004162",
+    "goodsReceiptStatus": "Scrap Stock Posted",
+    "billingBlock": "None",
+    "creditMemoDoc": "CR-900450",
+    "timeline": [
+      {
+        "step": "Return Order Created",
+        "timestamp": "2026-09-18 10:00",
+        "actor": "A. Sharma",
+        "status": "COMPLETED",
+        "docRef": "RO-772138",
+        "sapTx": "VA01",
+        "detail": "Standard exchange authorized."
+      },
+      {
+        "step": "PGR & Credit Memo Issued",
+        "timestamp": "2026-09-19 14:00",
+        "actor": "R. Nair",
+        "status": "COMPLETED",
+        "docRef": "CR-900450",
+        "sapTx": "VF01",
+        "detail": "Credit memo successfully posted to FI-AR."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Record closed. Archive case files.",
+      "confidence": "100%",
+      "evidence": [
+        "All transactions reconciled in SAP S/4HANA"
+      ],
+      "status": "RESOLVED"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-007",
+    "returnOrder": "RO-772145",
+    "sapDocument": "INV-460210",
+    "companyCode": "1300",
+    "plant": "1108",
+    "plantName": "Plant 1108 (Solar Module Fabrication)",
+    "storageLocation": "SL11",
+    "storageLocationName": "SL11 - Returns & Quality Quarantine",
+    "costCenter": "CC-2208",
+    "costCenterName": "CC-2208 - Customer Service & Warranty",
+    "material": "Bifacial Solar Cell SC-60",
+    "materialId": "MAT-SC-600",
+    "businessPartner": "BP-30114",
+    "businessPartnerRaw": "BP-30114",
+    "businessPartnerName": "Helios Energy Systems",
+    "currency": "GBP",
+    "amount": 18900,
+    "requestedDate": "2026-09-19",
+    "processingStatus": "Partially Processed",
+    "exceptionCategory": "Missing Mandatory Data",
+    "primaryExceptionReason": "Cost Center CC-2208 variance: Missing internal order settlement rule for warranty cost absorption.",
+    "assignedOwner": "P. Sundaram (Returns Manager)",
+    "riskLevel": "HIGH",
+    "riskScore": 62,
+    "riskReasons": [
+      "Internal Order CO settlement rule missing",
+      "Financial exposure: £18,900",
+      "Approaching 7-day attention threshold"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004170",
+    "goodsReceiptStatus": "Quarantine Received",
+    "billingBlock": "04 - CO Account Assignment Missing",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Return Order Created",
+        "timestamp": "2026-09-19 11:15",
+        "actor": "P. Sundaram",
+        "status": "COMPLETED",
+        "docRef": "RO-772145",
+        "sapTx": "VA01",
+        "detail": "Order generated for efficiency degradation claim."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Assign Settlement Rule IO-8802 (Warranty Solar) to Cost Center CC-2208 in SAP CO before releasing credit.",
+      "confidence": "93%",
+      "evidence": [
+        "CO settlement check failed during document simulation"
+      ],
+      "status": "RECOMMENDED"
+    },
+    "comments": []
+  },
+  {
+    "id": "RET-2026-008",
+    "returnOrder": "RO-772152",
+    "sapDocument": "INV-460233",
+    "companyCode": "1300",
+    "plant": "1102",
+    "plantName": "Plant 1102 (Wind Turbine Components)",
+    "storageLocation": "SL02",
+    "storageLocationName": "SL02 - Finished Goods Returns",
+    "costCenter": "CC-1102",
+    "costCenterName": "CC-1102 - Wind Operations",
+    "material": "Anemometer Mast Sensor AM-10",
+    "materialId": "MAT-AM-100",
+    "businessPartner": "BP-20088",
+    "businessPartnerRaw": "BP-20088",
+    "businessPartnerName": "Orion Wind Consortium",
+    "currency": "GBP",
+    "amount": 5600,
+    "requestedDate": "2026-09-21",
+    "processingStatus": "In Review",
+    "exceptionCategory": "Routine Inspection",
+    "primaryExceptionReason": "Goods receipt completed; awaiting technical lab calibration verification.",
+    "assignedOwner": "A. Sharma (Returns Analyst)",
+    "riskLevel": "LOW",
+    "riskScore": 24,
+    "riskReasons": [
+      "Within 3-day normal SLA window",
+      "Modest financial exposure (£5,600)",
+      "Standard process progression"
+    ],
+    "isPrimaryReference": false,
+    "deliveryDocument": "80004185",
+    "goodsReceiptStatus": "Inspection in Progress",
+    "billingBlock": "01 - Initial Inspection Hold",
+    "creditMemoDoc": null,
+    "timeline": [
+      {
+        "step": "Delivered to Plant 1102",
+        "timestamp": "2026-09-22 09:00",
+        "actor": "Plant 1102 Receiving",
+        "status": "COMPLETED",
+        "docRef": "DEL-80004185",
+        "sapTx": "VL01N",
+        "detail": "Units received into SL02."
+      }
+    ],
+    "recommendation": {
+      "nextAction": "Review calibration test results upon laboratory upload.",
+      "confidence": "95%",
+      "evidence": [
+        "Calibration ETA: 24 hours"
+      ],
+      "status": "IN_PROGRESS"
+    },
+    "comments": []
+  }
+]

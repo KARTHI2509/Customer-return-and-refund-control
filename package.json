@@ -1,0 +1,11 @@
+{
+  "name": "sungrid-renewables-sap-exception-control",
+  "version": "1.0.0",
+  "description": "SunGrid Renewables - Customer Return Exception Control (SAP S/4HANA SD BKP)",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev:server": "node --watch server/server.js",
+    "dev:client": "npm --prefix client run dev",
+    "build:client": "npm --prefix client run build"
+  }
+}
