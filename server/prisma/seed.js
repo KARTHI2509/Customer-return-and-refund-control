@@ -29,24 +29,40 @@ async function main() {
       email: 'sundaram@sungrid.com',
       name: 'P. Sundaram',
       role: 'RETURNS_MANAGER',
+      department: 'Customer Returns & Operations',
+      designation: 'Senior Returns Manager',
+      employeeId: 'EMP-1108-01',
+      status: 'APPROVED',
       isActive: true
     },
     {
       email: 'sharma@sungrid.com',
       name: 'A. Sharma',
       role: 'RETURNS_ANALYST',
+      department: 'Quality Assurance & Returns',
+      designation: 'Returns Analyst',
+      employeeId: 'EMP-1108-04',
+      status: 'APPROVED',
       isActive: true
     },
     {
       email: 'finance@sungrid.com',
       name: 'R. Nair',
       role: 'FINANCE_APPROVER',
+      department: 'Corporate Finance & Warranty Control',
+      designation: 'Lead Finance Approver',
+      employeeId: 'EMP-1300-88',
+      status: 'APPROVED',
       isActive: true
     },
     {
       email: 'admin@sungrid.com',
       name: 'System Admin',
       role: 'ADMIN',
+      department: 'Enterprise IT & ERP Systems',
+      designation: 'System Administrator',
+      employeeId: 'EMP-ADMIN-01',
+      status: 'APPROVED',
       isActive: true
     }
   ];
@@ -59,6 +75,10 @@ async function main() {
       update: {
         name: u.name,
         role: u.role,
+        department: u.department,
+        designation: u.designation,
+        employeeId: u.employeeId,
+        status: u.status,
         isActive: u.isActive
       },
       create: {
@@ -66,6 +86,10 @@ async function main() {
         email: u.email,
         passwordHash,
         role: u.role,
+        department: u.department,
+        designation: u.designation,
+        employeeId: u.employeeId,
+        status: u.status,
         isActive: u.isActive
       }
     });

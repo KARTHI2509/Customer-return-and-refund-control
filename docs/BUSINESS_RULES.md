@@ -79,3 +79,4 @@ The `validationService` enforces legitimate state transitions to prevent skippin
 ```
 
 - **Rejection Mandate:** Any transition to `Rejected` strictly requires a documented justification reason of at least **5 characters**, in compliance with SAP SD audit policy.
+

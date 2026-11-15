@@ -78,3 +78,4 @@ graph TD
 - **Current Mode:** Explicitly documented **Demo Mode** (`isDemoMode: true`).
 - **Simulated Latency:** Artificial 350ms delay to emulate wide-area corporate network latency.
 - **Error Injection:** Configurable simulation toggle in Settings to demonstrate application retry resilience and error handling when SAP Gateway returns HTTP 503 RFC timeouts.
+

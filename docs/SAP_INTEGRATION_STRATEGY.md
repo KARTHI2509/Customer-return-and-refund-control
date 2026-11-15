@@ -76,3 +76,4 @@ The application's data models map 1-to-1 with SAP standard OData service `API_CU
 ### Step 4: Resilience, Retry & Idempotency
 - **Circuit Breaker:** If SAP Gateway returns 503 or latency exceeds 4,000ms, the adapter opens the circuit and queues pending transactions in Neon PostgreSQL.
 - **Idempotency Key:** Outbound calls carry `X-Correlation-ID: <auditId>` to prevent duplicate credit memo creation in case of network timeouts.
+

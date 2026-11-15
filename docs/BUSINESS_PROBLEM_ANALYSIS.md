@@ -80,3 +80,4 @@ The solution is anchored around the exact assessment transaction:
 | **Processing Status** | `Partially Processed` | Incomplete document flow |
 | **Business Partner** | `Meridian Stores` | Regional distributor |
 | **Primary Exception** | Multi-Factor Breakdown | Missing Return Reason code, 10 vs 15 count variance, active Billing Block `08`, case ageing >70 days. |
+

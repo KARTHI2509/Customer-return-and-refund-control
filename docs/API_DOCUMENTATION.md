@@ -127,3 +127,4 @@ Batch-updates all unread notifications to `isRead: true` in Neon PostgreSQL.
 
 ### `POST /api/reset-data`
 Admin-only endpoint that executes `prisma/seed.js` to reset the database to its pristine demo state.
+

@@ -72,3 +72,4 @@ graph TD
 | **Financial Leakage Prevention** | Disputed over-credits issued | **Immediate savings (£7,833.30 on INV-460008)** | Automatic matching of warehouse receipt counts vs invoice counts. |
 
 *Note: All improvement percentages represent projected operational targets requiring post-implementation verification.*
+

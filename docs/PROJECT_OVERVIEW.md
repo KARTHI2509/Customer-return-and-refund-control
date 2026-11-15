@@ -41,3 +41,4 @@ This project delivers a **dedicated, database-backed operational exception contr
 - **Database & ORM:** PostgreSQL (Neon Serverless with PgBouncer Pooling), Prisma ORM v6.19
 - **Authentication:** JSON Web Tokens (JWT), bcryptjs password hashing
 - **Deployment Targets:** Vercel (Frontend SPA), Render (Backend Express REST Service), Neon (Cloud PostgreSQL)
+

@@ -18,7 +18,8 @@ import {
 export default function ExceptionWorkQueue({ 
   returns, 
   onSelectReturn, 
-  currentPersona 
+  currentPersona,
+  onOpenCreate 
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPlant, setSelectedPlant] = useState('ALL');
@@ -187,6 +188,16 @@ export default function ExceptionWorkQueue({
             >
               Reset Filters
             </button>
+
+            {onOpenCreate && (
+              <button
+                onClick={onOpenCreate}
+                className="btn btn-primary btn-sm"
+                style={{ marginLeft: 'auto', fontWeight: '700' }}
+              >
+                + New Return Case
+              </button>
+            )}
           </div>
         </div>
       </div>

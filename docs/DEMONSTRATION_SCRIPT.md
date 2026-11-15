@@ -55,3 +55,4 @@
 > *Finally, our in-app notifications and read states are fully persisted in Neon PostgreSQL. If I refresh the browser or restart the backend, every comment, milestone, and approval persists with full relational integrity.*
 >
 > *Thank you, and I look forward to your questions."*
+

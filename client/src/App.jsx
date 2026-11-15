@@ -9,36 +9,66 @@ import AnalyticsReports from './components/AnalyticsReports';
 import NotificationsCenter from './components/NotificationsCenter';
 import SettingsProcessContext from './components/SettingsProcessContext';
 import InterviewMasteryGuide from './components/InterviewMasteryGuide';
+import UserManagement from './components/UserManagement';
+import CreateReturnModal from './components/CreateReturnModal';
+import LoginView from './components/LoginView';
+import RegisterView from './components/RegisterView';
 
 // Configurable API Base URL for local dev and Vercel/Render deployment
 const API_BASE = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/+$/, '');
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authToken, setAuthToken] = useState(null);
+  const [authView, setAuthView] = useState('login'); // 'login' | 'register'
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  // Operational State
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [returns, setReturns] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [sapStatus, setSapStatus] = useState({ isDemoMode: true, status: 'HEALTHY' });
   const [selectedReturn, setSelectedReturn] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [authToken, setAuthToken] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // Active Demo Persona
-  const [currentPersona, setCurrentPersona] = useState({
-    id: 'manager',
-    name: 'P. Sundaram',
-    role: 'Returns Manager',
-    permissions: 'Assign, Triage, Approve Operational'
-  });
+  // Initialize session from localStorage on startup
+  useEffect(() => {
+    const initSession = async () => {
+      const savedToken = localStorage.getItem('sungrid_token');
+      const savedUser = localStorage.getItem('sungrid_user');
+
+      if (savedToken && savedUser) {
+        try {
+          const res = await fetch(`${API_BASE}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${savedToken}` }
+          });
+          if (res.ok) {
+            const freshUser = await res.json();
+            setCurrentUser(freshUser);
+            setAuthToken(savedToken);
+          } else {
+            // Invalid / expired session
+            localStorage.removeItem('sungrid_token');
+            localStorage.removeItem('sungrid_user');
+            setCurrentUser(null);
+            setAuthToken(null);
+          }
+        } catch (err) {
+          console.error('Session verification error:', err);
+        }
+      }
+      setIsInitializing(false);
+    };
+
+    initSession();
+  }, []);
 
   // Request headers helper
   const getHeaders = () => {
-    const headers = {
-      'Content-Type': 'application/json',
-      'x-persona': currentPersona.role,
-      'x-actor': currentPersona.name
-    };
+    const headers = { 'Content-Type': 'application/json' };
     if (authToken) {
       headers['Authorization'] = `Bearer ${authToken}`;
     }
@@ -47,7 +77,9 @@ export default function App() {
 
   // Fetch all initial data from PostgreSQL-backed API
   const loadAllData = async () => {
+    if (!authToken) return;
     try {
+      setLoading(true);
       const [returnsRes, analyticsRes, sapRes, notifRes] = await Promise.all([
         fetch(`${API_BASE}/returns`, { headers: getHeaders() }),
         fetch(`${API_BASE}/analytics`, { headers: getHeaders() }),
@@ -55,7 +87,8 @@ export default function App() {
         fetch(`${API_BASE}/notifications`, { headers: getHeaders() })
       ]);
 
-      const returnsData = await returnsRes.json();
+      const returnsPayload = await returnsRes.json();
+      const returnsData = returnsPayload.data || returnsPayload; // support pagination payload or array
       const analyticsData = await analyticsRes.json();
       const sapData = await sapRes.json();
       const notifData = notifRes.ok ? await notifRes.json() : [];
@@ -82,8 +115,29 @@ export default function App() {
   };
 
   useEffect(() => {
-    loadAllData();
-  }, [currentPersona]);
+    if (currentUser && authToken) {
+      loadAllData();
+    }
+  }, [currentUser, authToken]);
+
+  // Handle successful login
+  const handleLoginSuccess = (user, token) => {
+    setCurrentUser(user);
+    setAuthToken(token);
+    setCurrentTab('dashboard');
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('sungrid_token');
+    localStorage.removeItem('sungrid_user');
+    setCurrentUser(null);
+    setAuthToken(null);
+    setReturns([]);
+    setAnalytics(null);
+    setNotifications([]);
+    setAuthView('login');
+  };
 
   // Quick navigation to primary reference record
   const handleOpenReference = () => {
@@ -109,8 +163,8 @@ export default function App() {
         body: JSON.stringify({
           newOwner,
           reason,
-          actor: currentPersona.name,
-          persona: currentPersona.role
+          actor: currentUser?.name,
+          persona: currentUser?.role
         })
       });
       const data = await res.json();
@@ -121,8 +175,7 @@ export default function App() {
         alert(data.error || 'Failed to update owner.');
       }
     } catch (err) {
-      console.error(err);
-      alert('Network error updating owner.');
+      alert('Network error updating owner in PostgreSQL.');
     }
   };
 
@@ -135,8 +188,8 @@ export default function App() {
         headers: getHeaders(),
         body: JSON.stringify({
           text,
-          author: `${currentPersona.name} (${currentPersona.role})`,
-          persona: currentPersona.role
+          author: `${currentUser?.name} (${currentUser?.role})`,
+          persona: currentUser?.role
         })
       });
       const data = await res.json();
@@ -160,8 +213,8 @@ export default function App() {
           decision,
           feedback,
           revisedAction,
-          actor: currentPersona.name,
-          persona: currentPersona.role
+          actor: currentUser?.name,
+          persona: currentUser?.role
         })
       });
       const data = await res.json();
@@ -185,8 +238,8 @@ export default function App() {
           actionType,
           targetStatus,
           reason,
-          actor: currentPersona.name,
-          persona: currentPersona.role
+          actor: currentUser?.name,
+          persona: currentUser?.role
         })
       });
       const data = await res.json();
@@ -198,8 +251,7 @@ export default function App() {
         alert(data.error || 'Action execution failed.');
       }
     } catch (err) {
-      console.error(err);
-      alert('Network error executing action.');
+      alert('Network error executing action in PostgreSQL.');
     }
   };
 
@@ -253,7 +305,7 @@ export default function App() {
     setSapStatus(data);
   };
 
-  // 8. Reset Demo Data in PostgreSQL
+  // 8. Reset Demo Data in PostgreSQL (Admin Only)
   const handleResetData = async () => {
     if (!window.confirm('Reset demo dataset in Neon PostgreSQL back to original baseline (including INV-460008)?')) {
       return;
@@ -267,37 +319,57 @@ export default function App() {
       if (data.success) {
         await loadAllData();
         alert('Demo data has been reset to its original seeded baseline in Neon PostgreSQL.');
+      } else {
+        alert(data.error || 'Failed to reset demo dataset.');
       }
     } catch (err) {
-      console.error(err);
+      alert('Network failure resetting dataset.');
     }
   };
 
-  // Calculate unread alerts count from persisted notifications
-  const unreadCount = notifications.filter(n => !n.isRead).length;
-
-  if (loading) {
+  // Initializing Splash Screen
+  if (isInitializing) {
     return (
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        backgroundColor: '#0f172a',
+        backgroundColor: '#090d16',
         color: '#fff',
-        fontFamily: 'sans-serif'
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
       }}>
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '8px', color: '#38bdf8' }}>
             SunGrid Renewables
           </div>
-          <div style={{ fontSize: '14px', color: '#94a3b8' }}>
-            Connecting to Neon PostgreSQL & Initializing SAP S/4HANA SD Exception Control...
+          <div style={{ fontSize: '13px', color: '#94a3b8' }}>
+            Verifying operator session & connecting to Neon PostgreSQL...
           </div>
         </div>
       </div>
     );
   }
+
+  // Unauthenticated State: Show Login or Registration View
+  if (!currentUser) {
+    if (authView === 'register') {
+      return (
+        <RegisterView
+          onSwitchToLogin={() => setAuthView('login')}
+          onRegisterSuccess={() => setAuthView('login')}
+        />
+      );
+    }
+    return (
+      <LoginView
+        onLoginSuccess={handleLoginSuccess}
+        onSwitchToRegister={() => setAuthView('register')}
+      />
+    );
+  }
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
     <div className="app-layout">
@@ -307,6 +379,7 @@ export default function App() {
         setCurrentTab={setCurrentTab}
         openReferenceRecord={handleOpenReference}
         sapStatus={sapStatus}
+        currentUser={currentUser}
         counts={{
           activeExceptions: returns.filter(r => r.processingStatus !== 'Completed').length,
           pendingApprovals: returns.filter(r => r.processingStatus === 'Pending Approval').length,
@@ -318,14 +391,12 @@ export default function App() {
       <div className="main-wrapper">
         <Header
           currentTab={currentTab}
-          currentPersona={currentPersona}
-          setCurrentPersona={setCurrentPersona}
-          onResetData={handleResetData}
+          currentUser={currentUser}
+          onLogout={handleLogout}
           unreadAlertsCount={unreadCount}
           openNotifications={() => setCurrentTab('notifications')}
           openReferenceRecord={handleOpenReference}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
+          openCreateReturn={() => setIsCreateModalOpen(true)}
         />
 
         {/* Dynamic Page Body */}
@@ -343,7 +414,8 @@ export default function App() {
             <ExceptionWorkQueue
               returns={returns}
               onSelectReturn={handleSelectReturn}
-              currentPersona={currentPersona}
+              currentPersona={{ role: currentUser.role, name: currentUser.name }}
+              onOpenCreate={() => setIsCreateModalOpen(true)}
             />
           )}
 
@@ -358,7 +430,7 @@ export default function App() {
           {currentTab === 'workspace' && (
             <ResolutionWorkspace
               currentReturn={selectedReturn}
-              currentPersona={currentPersona}
+              currentPersona={{ role: currentUser.role, name: currentUser.name }}
               onAssignOwner={handleAssignOwner}
               onAddComment={handleAddComment}
               onRecommendationDecision={handleRecommendationDecision}
@@ -383,6 +455,10 @@ export default function App() {
             />
           )}
 
+          {currentTab === 'users' && currentUser.role === 'ADMIN' && (
+            <UserManagement currentUser={currentUser} />
+          )}
+
           {currentTab === 'settings' && (
             <SettingsProcessContext
               sapStatus={sapStatus}
@@ -399,6 +475,18 @@ export default function App() {
           )}
         </main>
       </div>
+
+      {/* Create Return Modal */}
+      {isCreateModalOpen && (
+        <CreateReturnModal
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={(newRecord) => {
+            setSelectedReturn(newRecord);
+            loadAllData();
+            setCurrentTab('details');
+          }}
+        />
+      )}
     </div>
   );
 }

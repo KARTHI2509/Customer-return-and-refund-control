@@ -42,3 +42,4 @@ All tests were programmatically executed against live Neon PostgreSQL instances 
 
 1. **Vercel Cold Starts on Free Tier:** If backend service on Render spins down due to inactivity, initial requests may take 15–20 seconds to warm up. A loading spinner is implemented in the UI.
 2. **SAP Live Mode:** Currently in simulated Demo Mode. Transitioning to live SAP S/4HANA requires corporate network firewall clearance for port 44300.
+

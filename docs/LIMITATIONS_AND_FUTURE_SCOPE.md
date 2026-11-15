@@ -36,3 +36,4 @@ timeline
 2. **Cloud Document Repository:** Integrate AWS S3 / Azure Blob Storage with pre-signed URLs to store physical inspection photographs and carrier bills of lading.
 3. **Machine Learning Anomaly Detection:** Train unsupervised clustering models on historical quality quarantine data (`SL11`) to identify supplier-specific batch defects before customer delivery.
 4. **Automated Supplier Chargebacks:** Automatically generate debit memos against component suppliers when physical inspection reveals manufacturing micro-cracks (such as defect batch `B-882` on Composite Panel CP-12).
+

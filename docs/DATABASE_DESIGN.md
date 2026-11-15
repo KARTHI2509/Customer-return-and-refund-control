@@ -190,3 +190,4 @@ erDiagram
 
 ### Model 8: `RecommendationFeedback`
 - **Purpose:** Records human decisions on system recommendations (`ACCEPTED`, `EDITED`, `REJECTED`) along with supporting evidence and revised actions.
+

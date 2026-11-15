@@ -9,7 +9,7 @@ import {
   GraduationCap, 
   Layers, 
   Sparkles,
-  Server
+  Users
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -17,9 +17,12 @@ export default function Sidebar({
   setCurrentTab, 
   openReferenceRecord, 
   sapStatus,
-  counts 
+  counts,
+  currentUser
 }) {
-  const navItems = [
+  const isAdmin = currentUser?.role === 'ADMIN';
+
+  const operationalNav = [
     { 
       id: 'dashboard', 
       label: 'Executive Dashboard', 
@@ -30,7 +33,7 @@ export default function Sidebar({
       id: 'workqueue', 
       label: 'Exception Work Queue', 
       icon: AlertOctagon,
-      badge: counts.activeExceptions || 7,
+      badge: counts.activeExceptions || null,
       danger: true
     },
     { 
@@ -43,8 +46,11 @@ export default function Sidebar({
       id: 'workspace', 
       label: 'Resolution Workspace', 
       icon: FileCheck2,
-      badge: counts.pendingApprovals || 2
-    },
+      badge: counts.pendingApprovals || null
+    }
+  ];
+
+  const intelligenceNav = [
     { 
       id: 'analytics', 
       label: 'Analytics & Reports', 
@@ -55,8 +61,14 @@ export default function Sidebar({
       id: 'notifications', 
       label: 'Notifications & Alerts', 
       icon: Bell,
-      badge: counts.unreadAlerts || 3
+      badge: counts.unreadAlerts || null
     },
+    ...(isAdmin ? [{
+      id: 'users',
+      label: 'User Directory & RBAC',
+      icon: Users,
+      badge: 'ADMIN'
+    }] : []),
     { 
       id: 'settings', 
       label: 'SAP Context & Config', 
@@ -93,7 +105,7 @@ export default function Sidebar({
       {/* Navigation Links */}
       <nav className="sidebar-nav">
         <div className="nav-section-title">Operations & Control</div>
-        {navItems.slice(0, 4).map(item => {
+        {operationalNav.map(item => {
           const Icon = item.icon;
           const isActive = currentTab === item.id;
           return (
@@ -116,7 +128,7 @@ export default function Sidebar({
         })}
 
         <div className="nav-section-title" style={{ marginTop: '12px' }}>Intelligence & Governance</div>
-        {navItems.slice(4).map(item => {
+        {intelligenceNav.map(item => {
           const Icon = item.icon;
           const isActive = currentTab === item.id;
           return (
@@ -130,7 +142,7 @@ export default function Sidebar({
                 <span>{item.label}</span>
               </div>
               {item.badge && (
-                <span className={`nav-badge ${item.danger ? 'danger' : ''}`}>
+                <span className={`nav-badge ${item.badge === 'ADMIN' ? 'admin' : item.danger ? 'danger' : ''}`}>
                   {item.badge}
                 </span>
               )}
