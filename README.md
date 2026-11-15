@@ -228,3 +228,45 @@ Overall Status:           ALL TESTS PASSED (100%)
 - **Relational Integrity:** Verified foreign key cascading on `ReturnComment` and `ReturnEvent`.
 - **Duplicate Prevention:** Verified `P2002` rejection on duplicate `INV-460008`.
 - **Process Lifecycle Persistence:** Verified that records created in one process persist and remain retrievable in subsequent independent processes.
+
+---
+
+## 10. Automated CI/CD Pipeline & Deployment Guide
+
+This repository includes a continuous integration and deployment pipeline configured via `.github/workflows/ci-cd.yml`, `vercel.json`, and `render.yaml`. Every push to `main` automatically triggers validation and deployments:
+
+### Continuous Deployment Workflow
+```
+Git Push to main (GitHub)
+       |
+       +---> GitHub Actions CI/CD Pipeline
+       |        |-- Validates Node 20 runtime
+       |        |-- Builds & tests frontend (`npm ci && npm run build`)
+       |        |-- Generates Prisma Client (`npx prisma generate`)
+       |
+       +---> Vercel Frontend Auto-Deploy (Monitors `main`)
+       |        |-- Deploys React 19 + Vite app from `client/`
+       |        |-- Applies SPA routing rules via `vercel.json`
+       |
+       +---> Render Backend Auto-Deploy (Monitors `main`)
+                |-- Reads `render.yaml` Blueprint
+                |-- Installs dependencies & runs `npx prisma migrate deploy`
+                |-- Boots Express API on port 5000 with health checks
+```
+
+### Deployment Configuration Steps
+
+1. **Backend (Render):**
+   - In the [Render Dashboard](https://dashboard.render.com), click **New + -> Blueprint** and select your GitHub repository `Customer-return-and-refund-control`.
+   - Render reads `render.yaml` and provisions the Web Service `sungrid-return-exception-server`.
+   - Set environment variables in Render:
+     - `DATABASE_URL`: Your pooled Neon PostgreSQL connection string.
+     - `DIRECT_URL`: Your direct Neon PostgreSQL connection string.
+     - `CLIENT_URL`: Your deployed Vercel URL.
+
+2. **Frontend (Vercel):**
+   - In the [Vercel Dashboard](https://vercel.com), click **Add New -> Project** and import `Customer-return-and-refund-control`.
+   - Set Root Directory to `client` (or leave default root as `vercel.json` handles monorepo build).
+   - Set Environment Variables:
+     - `VITE_API_URL`: Your deployed Render API URL (e.g. `https://sungrid-return-exception-server.onrender.com/api`).
+

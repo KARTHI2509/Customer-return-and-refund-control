@@ -1,0 +1,60 @@
+name: CI/CD Pipeline & Automated Deployment
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-and-build:
+    name: Build & Validate Full Stack
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            client/package-lock.json
+            server/package-lock.json
+
+      - name: Install & Build Frontend (Client)
+        run: |
+          cd client
+          npm ci
+          npm run build
+
+      - name: Install & Validate Backend (Server)
+        run: |
+          cd server
+          npm ci
+          npx prisma generate
+
+  trigger-deployments:
+    name: Trigger Render & Vercel Deployments
+    needs: validate-and-build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy Hook (if configured)
+        if: env.RENDER_HOOK != ''
+        env:
+          RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          echo "Triggering Render deployment..."
+          curl -s -X POST "$RENDER_HOOK" || echo "Render webhook returned non-zero, skipping"
+
+      - name: Trigger Vercel Deploy Hook (if configured)
+        if: env.VERCEL_HOOK != ''
+        env:
+          VERCEL_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          echo "Triggering Vercel deployment..."
+          curl -s -X POST "$VERCEL_HOOK" || echo "Vercel webhook returned non-zero, skipping"
